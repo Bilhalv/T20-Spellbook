@@ -1,2 +1,2 @@
-# T20-Spellbook
-A simple spellbook for the ttrpg Tormenta 20 with updated spells
+# fluffy-octo-potato
+A regular gm screen for the ttrpg Tormenta 20
