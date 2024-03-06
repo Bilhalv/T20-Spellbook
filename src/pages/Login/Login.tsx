@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import firebase from "./../../../firebase";
 import {
   Button,
-  Input,
   FormControl,
-  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -30,13 +28,6 @@ export function Login() {
       setError("Houve um erro ao logar");
     }
   };
-
-  const errorSpan = (text: string) => (
-    <span className="text-red-600">{text}</span>
-  );
-  const successSpan = (text: string) => (
-    <span className="text-green-600">{text}</span>
-  );
 
   return (
     <>
