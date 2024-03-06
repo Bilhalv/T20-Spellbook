@@ -25,6 +25,18 @@ export function Register() {
       setError("Os emails não são iguais");
       return;
     }
+    if (password !== passwordConfirm) {
+      setError("As senhas não são iguais");
+      return;
+    }
+    if (password.length < 6) {
+      setError("A senha é muito curta");
+      return;
+    }
+    if (!email.includes("@")) {
+      setError("Email inválido");
+      return;
+    }
     try {
       const response = await firebase
         .auth()
