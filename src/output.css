@@ -608,8 +608,12 @@ video {
   display: flex;
 }
 
-.w-1\/2 {
-  width: 50%;
+.w-3\/4 {
+  width: 75%;
+}
+
+.w-4\/5 {
+  width: 80%;
 }
 
 .flex-col {
@@ -643,11 +647,6 @@ video {
   line-height: 1rem;
 }
 
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
-
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
@@ -672,4 +671,14 @@ video {
   font-family: 'tormenta';
 
   src: url("/Tormenta.ttf");
+}
+
+@media (min-width: 1024px) {
+  .desktop\:w-1\/2 {
+    width: 50%;
+  }
+
+  .desktop\:w-2\/3 {
+    width: 66.666667%;
+  }
 }

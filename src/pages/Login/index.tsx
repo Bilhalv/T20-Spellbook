@@ -9,7 +9,7 @@ const Entrar = () => {
   return (
     <>
       <Nav />
-      <div className="flex flex-col w-1/2 mx-auto mt-4">
+      <div className="flex flex-col desktop:w-2/3 w-4/5 mx-auto mt-4">
         {isCreatingNew ? <Register /> : <Login />}
         <Button onClick={() => setIsCreatingNew(!isCreatingNew)}>
           {isCreatingNew ? "Já tenho conta" : "Criar conta"}
