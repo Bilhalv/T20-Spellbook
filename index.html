@@ -17,6 +17,28 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+    <!-- Add Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyA6WCRluxGpBfIqHUZY7WmCIq6ta7AqAiY",
+        authDomain: "t20-spellbook.firebaseapp.com",
+        databaseURL: "https://t20-spellbook-default-rtdb.firebaseio.com",
+        projectId: "t20-spellbook",
+        storageBucket: "t20-spellbook.appspot.com",
+        messagingSenderId: "952548118768",
+        appId: "1:952548118768:web:a29faa93b8f07c9313f235",
+        measurementId: "G-FMVC252GJS",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
     <script type="module" src="/src/index.jsx"></script>
   </body>
 </html>

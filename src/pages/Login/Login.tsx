@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import firebase from "./../../../firebase";
 import {
   Button,
   FormControl,
@@ -9,7 +8,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
-
+declare const firebase: any;
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
