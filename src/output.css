@@ -608,10 +608,6 @@ video {
   display: flex;
 }
 
-.w-3\/4 {
-  width: 75%;
-}
-
 .w-4\/5 {
   width: 80%;
 }
@@ -674,10 +670,6 @@ video {
 }
 
 @media (min-width: 1024px) {
-  .desktop\:w-1\/2 {
-    width: 50%;
-  }
-
   .desktop\:w-2\/3 {
     width: 66.666667%;
   }
