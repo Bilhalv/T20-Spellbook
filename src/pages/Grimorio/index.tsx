@@ -1,46 +1,77 @@
 import React from "react";
 import { Nav } from "../../components/Nav";
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, doc, setDoc, getDoc, arrayUnion, updateDoc } from "firebase/firestore";
-import { Firestore } from "@google-cloud/firestore";
-import { onSnapshot } from "firebase/firestore";
-import { addDoc, deleteDoc } from "firebase/firestore";
 import firebase from "./../../../firebase";
-import { addToGrimorio, getGrimorio, removeGrimorio } from "../../functions/Grimorios";
+import { addPersonagem, addToGrimorio, getGrimorio, getPersonagens, removeGrimorio } from "../../functions/Grimorios";
 import { magiaTipo } from "../../data/list magias";
-import { addSpell, getSpells } from "../../functions/Spells";
+import { getSpells } from "../../functions/Spells";
+import { Select } from "@mui/material";
+import { collection, getFirestore } from "firebase/firestore";
 
 export interface grimorioTipo {
   email: string;
   magias: magiaTipo[];
+  personagem: string;
 }
 
 const Grimorio = () => {
+  const refGrimorio = collection(getFirestore(), "Grimorio");
   const [spells, setSpells] = React.useState<magiaTipo[]>([]);
+  const [personagem, setPersonagem] = React.useState<string>();
   const [grimorio, setGrimorio] = React.useState<grimorioTipo>();
+  const [personagens, setPersonagens] = React.useState<string[]>([]);
+  const [personagemInput, setPersonagemInput] = React.useState<string>("");
+  React.useEffect(() => {
+    getSpells(setSpells);
+    getPersonagens(setPersonagens);
+    getGrimorio(setGrimorio, personagem);
+  }, []);
 
   return (
     <>
       <Nav />
       <div>
-        <h1>
-          here is where ill put the spells sorted by character, with its own
-          screen, prolly in a select to change wich character is shown
-        </h1>
         {firebase.auth().currentUser ? (
           <>
+            {personagens.length !== 0 && (
+              <Select fullWidth value={personagem}
+                onChange={(e) => {
+                  setPersonagem(e.target.value);
+                  getGrimorio(setGrimorio, e.target.value);
+                }}
+              >
+                {personagens.map((y, i) => (
+                  <option key={i} value={y}>{y}</option>
+                ))}
+
+              </Select>
+            )}
+            <input
+              type="text"
+              onChange={(e) => {
+                setPersonagemInput(e.target.value);
+              }}
+            />
+            {personagemInput !== undefined && (
+              <button onClick={() => {
+                addPersonagem(personagemInput);
+                setPersonagem(personagemInput);
+                getPersonagens(setPersonagens);
+              }}>add to grimorio</button>
+            )}
             <h1>{firebase.auth().currentUser?.email}</h1>
-            <button onClick={() => getSpells(setSpells)}>get spells</button>
-            <button onClick={addSpell}>add spell</button>
-            <button onClick={() => getGrimorio(setGrimorio)}>get grimorio</button>
+            {/* <button onClick={() => getSpells(setSpells)}>get spells</button> */}
+            {/* <button onClick={addSpell}>add spell</button> */}
+            {/* <button onClick={() => getGrimorio(setGrimorio)}>get grimorio</button> */}
             <div>
               <h1>Magias</h1>
               {spells.map((spell, i) => (
                 <div key={i}>
                   <h2>{spell.nome}</h2>
-                  <button onClick={() => addToGrimorio(spell)}>
-                    add to grimorio
-                  </button>
+                  {personagem !== undefined && (
+                    <button onClick={() => addToGrimorio(spell, personagem)}>
+                      add to grimorio
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
