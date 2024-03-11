@@ -1,7 +1,13 @@
 import React from "react";
 import { Nav } from "../../components/Nav";
 import firebase from "./../../../firebase";
-import { addPersonagem, addToGrimorio, getGrimorio, getPersonagens, removeGrimorio } from "../../functions/Grimorios";
+import {
+  addPersonagem,
+  addToGrimorio,
+  getGrimorio,
+  getPersonagens,
+  removeGrimorio,
+} from "../../functions/Grimorios";
 import { magiaTipo } from "../../data/list magias";
 import { getSpells } from "../../functions/Spells";
 import { Select } from "@mui/material";
@@ -33,16 +39,19 @@ const Grimorio = () => {
         {firebase.auth().currentUser ? (
           <>
             {personagens.length !== 0 && (
-              <Select fullWidth value={personagem}
+              <Select
+                fullWidth
+                value={personagem}
                 onChange={(e) => {
                   setPersonagem(e.target.value);
                   getGrimorio(setGrimorio, e.target.value);
                 }}
               >
                 {personagens.map((y, i) => (
-                  <option key={i} value={y}>{y}</option>
+                  <option key={i} value={y}>
+                    {y}
+                  </option>
                 ))}
-
               </Select>
             )}
             <input
@@ -52,11 +61,15 @@ const Grimorio = () => {
               }}
             />
             {personagemInput !== undefined && (
-              <button onClick={() => {
-                addPersonagem(personagemInput);
-                setPersonagem(personagemInput);
-                getPersonagens(setPersonagens);
-              }}>add to grimorio</button>
+              <button
+                onClick={() => {
+                  addPersonagem(personagemInput);
+                  setPersonagem(personagemInput);
+                  getPersonagens(setPersonagens);
+                }}
+              >
+                add to grimorio
+              </button>
             )}
             <h1>{firebase.auth().currentUser?.email}</h1>
             {/* <button onClick={() => getSpells(setSpells)}>get spells</button> */}
@@ -81,7 +94,9 @@ const Grimorio = () => {
                 grimorio.magias.map((spell, i) => (
                   <div key={i}>
                     <h2>{spell.nome}</h2>
-                    <button onClick={() => removeGrimorio(spell.nome, grimorio)}>
+                    <button
+                      onClick={() => removeGrimorio(spell.nome, grimorio)}
+                    >
                       remove
                     </button>
                   </div>
