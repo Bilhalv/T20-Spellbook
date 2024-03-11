@@ -23,6 +23,7 @@ export function Login() {
         .signInWithEmailAndPassword(email, password);
       console.log(response);
       setError("Logado com sucesso");
+      window.location.href = "/grimorio";
     } catch (error) {
       console.log(error);
       setError("Houve um erro ao logar");
