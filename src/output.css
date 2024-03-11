@@ -612,20 +612,12 @@ video {
   display: flex;
 }
 
-.h-16 {
-  height: 4rem;
-}
-
 .h-96 {
   height: 24rem;
 }
 
 .w-1\/2 {
   width: 50%;
-}
-
-.w-16 {
-  width: 4rem;
 }
 
 .w-32 {
@@ -652,10 +644,6 @@ video {
   justify-content: space-between;
 }
 
-.justify-evenly {
-  justify-content: space-evenly;
-}
-
 .gap-4 {
   gap: 1rem;
 }
@@ -664,12 +652,12 @@ video {
   border-radius: 0.25rem;
 }
 
-.rounded-full {
-  border-radius: 9999px;
-}
-
 .rounded-xl {
   border-radius: 0.75rem;
+}
+
+.border {
+  border-width: 1px;
 }
 
 .border-r-2 {
@@ -716,6 +704,10 @@ video {
   text-align: center;
 }
 
+.text-right {
+  text-align: right;
+}
+
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -731,13 +723,12 @@ video {
   line-height: 1rem;
 }
 
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
-}
-
 .font-bold {
   font-weight: 700;
+}
+
+.italic {
+  font-style: italic;
 }
 
 .text-black {
@@ -781,6 +772,10 @@ video {
   font-family: 'tormenta';
 
   src: url("/Tormenta.ttf");
+}
+
+.hover\:cursor-not-allowed:hover {
+  cursor: not-allowed;
 }
 
 .hover\:cursor-pointer:hover {

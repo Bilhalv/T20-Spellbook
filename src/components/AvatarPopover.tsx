@@ -2,6 +2,8 @@ import { Avatar, IconButton, Modal, Popover } from "@mui/material";
 import firebase from "../../firebase";
 import React from "react";
 import { Pen } from "lucide-react";
+import "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 function ButtonConstructor(content: string, onClick: () => void) {
   return (
@@ -23,43 +25,69 @@ export function AvatarPopover() {
     firebase.auth().signOut();
     window.location.href = "/";
   };
-  const [optionEditing, setOptionEditing] = React.useState<
-    null | "Email" | "Nome" | "Foto de perfil"
-  >(null);
-  const onEditProfile = (option: "Email" | "Nome" | "Foto de perfil") => {
+
+  const [profileInfo, setProfileInfo] = React.useState({
+    email: "",
+    name: "",
+    photoURL: "",
+  });
+
+  const onEditProfile = (option: "Nome" | "Foto de perfil") => {
     console.log("Editing: ", option);
-    setOptionEditing(option);
     switch (option) {
-      case "Email":
-        firebase
-          .auth()
-          .currentUser?.updateEmail(window.prompt("Digite o novo email") || "");
-        break;
       case "Nome":
+        const name = window.prompt("Digite o novo nome") || "";
         firebase.auth().currentUser?.updateProfile({
-          displayName: window.prompt("Digite o novo nome") || "",
+          displayName: name,
         });
         break;
       case "Foto de perfil":
+        const UID = firebase.auth().currentUser?.uid;
         var input = document.createElement("input");
         input.type = "file";
         input.click();
         input.onchange = () => {
-          firebase.auth().currentUser?.updateProfile({
-            photoURL: input.value,
-          });
-          console.log("PhotoURL: ", input.value);
+          const storage = getStorage();
+          const storageRef = ref(storage, `users/${UID}/profile.jpg`);
+          const file = input.files?.item(0);
+          if (file) {
+            const uploadTask = uploadBytes(storageRef, file);
+            uploadTask.then((snapshot) => {
+              getDownloadURL(snapshot.ref).then((url) => {
+                firebase.auth().currentUser?.updateProfile({
+                  photoURL: url
+                })
+              })
+            })
+          }
         };
         break;
     }
   };
+
+  React.useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setProfileInfo({
+          email: user.email || "",
+          name: user.displayName || "",
+          photoURL: user.photoURL || "",
+        });
+      }
+    });
+  }, []);
   return (
     <>
       <button
         aria-describedby={Boolean(anchorEl) ? "simple-popover" : undefined}
         onClick={(event) => setAnchorEl(event.currentTarget)}
+        className="flex gap-4"
       >
-        <Avatar src={firebase.auth().currentUser?.photoURL || ""} />
+        <div className="flex flex-col text-left">
+          <p>{profileInfo.name}</p>
+          <p className="italic text-xs">{profileInfo.email}</p>
+        </div>
+        <Avatar sx={{ border: "2px solid white", bgcolor: "white" }} src={profileInfo.photoURL} />
       </button>
       <Popover
         id={Boolean(anchorEl) ? "simple-popover" : undefined}
@@ -94,22 +122,20 @@ export function AvatarPopover() {
       >
         <div className="h-96 w-1/2 bg-white/75 absolute p-4 rounded-xl flex flex-col justify-center items-center gap-4">
           <Avatar
-            sx={{ cursor: "pointer", width: 100, height: 100 }}
+            sx={{ cursor: "pointer", width: 100, height: 100, border: "2px solid white", bgcolor: "white" }}
             onClick={() => onEditProfile("Foto de perfil")}
-            src={firebase.auth().currentUser?.photoURL || ""}
+            src={profileInfo.photoURL}
           />
-          <p>{firebase.auth().currentUser?.photoURL || "aaa"}</p>
           <p
-            className="hover:cursor-pointer"
-            onClick={() => onEditProfile("Email")}
+            className="hover:cursor-not-allowed"
           >
-            {firebase.auth().currentUser?.email}
+            {profileInfo.email || "Sem email"}
           </p>
           <p
             className="hover:cursor-pointer"
             onClick={() => onEditProfile("Nome")}
           >
-            {firebase.auth().currentUser?.displayName || "Sem nome"}
+            {profileInfo.name || "Sem nome"}
           </p>
         </div>
       </Modal>
