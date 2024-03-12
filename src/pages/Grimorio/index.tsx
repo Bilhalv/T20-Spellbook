@@ -6,7 +6,6 @@ import {
   addToGrimorio,
   getGrimorio,
   getGrimoriosDaConta,
-  getPersonagens,
   removeGrimorio,
   removeMagiaFromGrimorio,
 } from "../../functions/Grimorios";
@@ -14,13 +13,9 @@ import { magiaTipo } from "../../data/list magias";
 import { getSpells } from "../../functions/Spells";
 import {
   IconButton,
-  Input,
-  MenuItem,
   Modal,
-  Select,
   TextField,
 } from "@mui/material";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { Pen, Plus, Trash2 } from "lucide-react";
 
 export interface grimorioTipo {
@@ -39,11 +34,16 @@ const Grimorio = () => {
   React.useEffect(() => {
     getSpells(setSpells);
     getGrimorio(setGrimorio, personagem);
-    getGrimoriosDaConta(setGrimoriosDaConta, grimoriosDaConta);
+    getGrimoriosDaConta(setGrimoriosDaConta);
   }, []);
   const [personagem, setPersonagem] = React.useState<string>();
   const [open, setOpen] = React.useState(false);
   const [openAddMagia, setOpenAddMagia] = React.useState(false);
+  setTimeout(() => {
+    if (!personagem) {
+      setPersonagem(grimoriosDaConta[0]?.personagem);
+    }
+  }, 100);
   return (
     <>
       <Nav />
@@ -79,11 +79,12 @@ const Grimorio = () => {
                   <div key={i} className="flex justify-between">
                     <h2>{spell.nome}</h2>
                     <button
-                      onClick={() => {
-                        removeMagiaFromGrimorio(spell.nome, grimorio);
-                        setTimeout(() => {
+                      onClick={async () => {
+                        try {
+                          await removeMagiaFromGrimorio(spell.nome, grimorio);
+                        } finally {
                           getGrimorio(setGrimorio, personagem);
-                        }, 1000);
+                        }
                       }}
                       className="bg-gray-200 p-2 rounded-full m-2 hover:bg-gray-300 transition-all text-xs"
                     >
@@ -139,21 +140,25 @@ const Grimorio = () => {
                       <div className="w-full flex justify-between">
                         <button
                           key={i}
-                          onClick={() => {
-                            setPersonagem(y.personagem);
-                            getGrimorio(setGrimorio, y.personagem);
-                            setOpen(false);
+                          onClick={async () => {
+                            try {
+                              await setPersonagem(y.personagem);
+                            } finally {
+                              getGrimorio(setGrimorio, y.personagem);
+                              setOpen(false);
+                            }
                           }}
                           className="bg-gray-200 p-2 rounded-xl hover:bg-gray-300 transition-all w-1/2 h-fit text-xs"
                         >
                           {y.personagem} - {y.magias.length} magias
                         </button>
                         <button
-                          onClick={() => {
-                            removeGrimorio(y.personagem);
-                            setTimeout(() => {
-                              getGrimoriosDaConta(setGrimoriosDaConta, []);
-                            }, 1000);
+                          onClick={async () => {
+                            try {
+                              await removeGrimorio(y.personagem);
+                            } finally {
+                              getGrimoriosDaConta(setGrimoriosDaConta);
+                            }
                           }}
                           className="bg-gray-200 p-2 rounded-full m-2 hover:bg-gray-300 transition-all text-xs"
                         >
@@ -176,9 +181,11 @@ const Grimorio = () => {
               }}
             >
               <>
-                <div>
+                <div
+                  className="bg-white p-4 rounded-xl font-tormenta w-1/2 h-fit text-center overflow-y-scroll overflow-x-hidden flex flex-col items-center gap-4 max-h-60"
+                >
                   <h1>Adicionar magia</h1>
-                  <div>
+                  <div className="flex flex-col w-full">
                     {spells.map((spell, i) => (
                       <div key={i} className="flex justify-between">
                         <h2>{spell.nome}</h2>
@@ -189,12 +196,14 @@ const Grimorio = () => {
                               (y) => y.nome === spell.nome
                             ) !== -1
                           }
-                          onClick={() => {
-                            addToGrimorio(spell, personagem as string);
-                            setTimeout(() => {
+                          onClick={async () => {
+                            try {
+                              await addToGrimorio(spell, personagem as string);
+                            } finally {
                               getGrimorio(setGrimorio, personagem);
-                            }, 1000);
+                            }
                           }}
+                          className="bg-gray-200 p-2 rounded-full m-2 hover:bg-gray-300 transition-all text-xs disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
                         >
                           <Plus size={20} />
                         </button>

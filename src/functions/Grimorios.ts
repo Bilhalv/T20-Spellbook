@@ -127,8 +127,7 @@ export async function getGrimorio(
 }
 
 export async function getGrimoriosDaConta(
-  setGrimoriosDaConta: (grimorios: grimorioTipo[]) => void,
-  grimoriosDaConta: grimorioTipo[]
+  setGrimoriosDaConta: (grimorios: grimorioTipo[]) => void
 ) {
   const querySnapshot = await getDocs(refGrimorio);
   const grimoriostemp: grimorioTipo[] = []
