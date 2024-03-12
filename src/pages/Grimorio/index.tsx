@@ -57,6 +57,7 @@ const Grimorio = () => {
               <IconButton
                 onClick={() => {
                   setOpen(true);
+                  getGrimoriosDaConta(setGrimoriosDaConta);
                 }}
               >
                 <Pen />
@@ -191,7 +192,6 @@ const Grimorio = () => {
                         <h2>{spell.nome}</h2>
                         <button
                           disabled={
-                            !personagem ||
                             grimorio?.magias.findIndex(
                               (y) => y.nome === spell.nome
                             ) !== -1
