@@ -626,6 +626,22 @@ video {
   height: fit-content;
 }
 
+.h-full {
+  height: 100%;
+}
+
+.h-20 {
+  height: 5rem;
+}
+
+.h-1 {
+  height: 0.25rem;
+}
+
+.h-16 {
+  height: 4rem;
+}
+
 .max-h-60 {
   max-height: 15rem;
 }
@@ -642,6 +658,12 @@ video {
   width: 80%;
 }
 
+.w-fit {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 .w-full {
   width: 100%;
 }
@@ -654,6 +676,14 @@ video {
   align-items: center;
 }
 
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
 .justify-center {
   justify-content: center;
 }
@@ -662,12 +692,16 @@ video {
   justify-content: space-between;
 }
 
-.gap-4 {
-  gap: 1rem;
+.justify-evenly {
+  justify-content: space-evenly;
 }
 
-.gap-6 {
-  gap: 1.5rem;
+.justify-items-start {
+  justify-items: start;
+}
+
+.gap-4 {
+  gap: 1rem;
 }
 
 .overflow-x-hidden {
@@ -694,12 +728,35 @@ video {
   border-width: 1px;
 }
 
+.border-b {
+  border-bottom-width: 1px;
+}
+
 .border-r-2 {
   border-right-width: 2px;
 }
 
 .border-transparent {
   border-color: transparent;
+}
+
+.border-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+
+.border-b-white {
+  --tw-border-opacity: 1;
+  border-bottom-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.border-b-transparent {
+  border-bottom-color: transparent;
+}
+
+.border-b-black {
+  --tw-border-opacity: 1;
+  border-bottom-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
 
 .bg-gray-200 {
@@ -835,9 +892,30 @@ video {
   cursor: pointer;
 }
 
+.hover\:border-b:hover {
+  border-bottom-width: 1px;
+}
+
 .hover\:border-r-white:hover {
   --tw-border-opacity: 1;
   border-right-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.hover\:border-b-white:hover {
+  --tw-border-opacity: 1;
+  border-bottom-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.hover\:border-b-white\/75:hover {
+  border-bottom-color: rgb(255 255 255 / 0.75);
+}
+
+.hover\:border-b-white\/70:hover {
+  border-bottom-color: rgb(255 255 255 / 0.7);
+}
+
+.hover\:border-b-white\/30:hover {
+  border-bottom-color: rgb(255 255 255 / 0.3);
 }
 
 .hover\:bg-black:hover {
