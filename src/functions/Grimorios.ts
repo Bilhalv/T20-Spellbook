@@ -8,6 +8,7 @@ import {
   getFirestore,
   getDocs,
   arrayRemove,
+  deleteDoc,
 } from "firebase/firestore";
 import { magiaTipo } from "../data/list magias";
 import { grimorioTipo } from "../pages/Grimorio";
@@ -65,7 +66,7 @@ export async function getPersonagens(
   });
   setPersonagens(personagens);
 }
-export async function removeGrimorio(
+export async function removeMagiaFromGrimorio(
   x: string,
   grimorio: grimorioTipo | undefined
 ) {
@@ -121,6 +122,35 @@ export async function getGrimorio(
       data.personagem === personagem
     ) {
       setGrimorio(data);
+    }
+  });
+}
+
+export async function getGrimoriosDaConta(
+  setGrimoriosDaConta: (grimorios: grimorioTipo[]) => void,
+  grimoriosDaConta: grimorioTipo[]
+) {
+  const querySnapshot = await getDocs(refGrimorio);
+  const grimoriostemp: grimorioTipo[] = []
+  querySnapshot.forEach((doc) => {
+    const data = doc.data() as grimorioTipo;
+    if (data.email === firebase.auth().currentUser?.email) {
+      grimoriostemp.push(data);
+    }
+  });
+  setGrimoriosDaConta(grimoriostemp);
+}
+
+export async function removeGrimorio(personagem: string) {
+  const querySnapshot = await getDocs(refGrimorio);
+  querySnapshot.forEach(async (document) => {
+    const data = document.data() as grimorioTipo;
+    if (
+      data.email === firebase.auth().currentUser?.email &&
+      data.personagem === personagem
+    ) {
+      const docRef = doc(refGrimorio, document.id);
+      await deleteDoc(docRef);
     }
   });
 }
