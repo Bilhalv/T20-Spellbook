@@ -1,17 +1,20 @@
-import { Avatar, IconButton, Modal, Popover } from "@mui/material";
+import { Avatar, IconButton, Modal, Popover, SvgIconTypeMap } from "@mui/material";
 import firebase from "../../firebase";
 import React from "react";
-import { Pen } from "lucide-react";
+import { Pen, LogOut } from "lucide-react";
 import "firebase/storage";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
-function ButtonConstructor(content: string, onClick: () => void) {
+function ButtonConstructor(content: string, onClick: () => void, icon: React.JSX.Element) {
   return (
     <button
       onClick={onClick}
-      className="border-r-2 border-transparent hover:border-r-white text-left font-bold py-2 transition-all"
+      className="border-r-2 border-transparent hover:border-r-white text-left font-bold p-2 transition-all flex justify-between items-center hover:cursor-pointer"
     >
-      {content}
+      <p>
+        {content}
+      </p>
+      {icon}
     </button>
   );
 }
@@ -109,10 +112,10 @@ export function AvatarPopover() {
         }}
       >
         <div className="flex flex-col w-32 text-sm">
-          {ButtonConstructor("Logout", onLogout)}
           {ButtonConstructor("Perfil", () => {
             setIsProfileOpen(true);
-          })}
+          }, <Pen size={20} />)}
+          {ButtonConstructor("Logout", onLogout, <LogOut size={20} />)}
         </div>
       </Popover>
       <Modal
