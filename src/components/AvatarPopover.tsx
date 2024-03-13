@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Modal, Popover, SvgIconTypeMap } from "@mui/material";
+import { Avatar, Modal, Popover } from "@mui/material";
 import firebase from "../../firebase";
 import React from "react";
 import { Pen, LogOut } from "lucide-react";

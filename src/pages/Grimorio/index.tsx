@@ -11,13 +11,10 @@ import {
 } from "../../functions/Grimorios";
 import { magiaTipo } from "../../data/list magias";
 import { getSpells } from "../../functions/Spells";
-import {
-  IconButton,
-  Modal,
-  TextField,
-} from "@mui/material";
+import { IconButton, Modal, TextField } from "@mui/material";
 import { Pen, Plus, Trash2 } from "lucide-react";
 import { MagiaCard } from "../../components/MagiaCard";
+import { Refresh } from "@mui/icons-material";
 
 export interface grimorioTipo {
   email: string;
@@ -40,9 +37,11 @@ const Grimorio = () => {
   const [personagem, setPersonagem] = React.useState<string>();
   const [open, setOpen] = React.useState(false);
   const [openAddMagia, setOpenAddMagia] = React.useState(false);
+
   setTimeout(() => {
-    if (!personagem) {
+    if (personagem === undefined && grimoriosDaConta[0] !== undefined) {
       setPersonagem(grimoriosDaConta[0]?.personagem);
+      getGrimorio(setGrimorio, grimoriosDaConta[0]?.personagem);
     }
   }, 100);
   return (
@@ -67,7 +66,24 @@ const Grimorio = () => {
             {personagem && (
               <>
                 <div className="flex w-full justify-between px-6 items-center">
-                  <h1 className="text-xl">{personagem}</h1>
+                  <div className="text-xl font-tormenta flex gap-4 items-center">
+                    <IconButton
+                      onClick={() => {
+                        getGrimorio(setGrimorio, personagem);
+                      }}
+                      sx={{
+                        bgcolor: "red",
+                        transition: "all 0.5s",
+                        "&:hover": {
+                          transform: "rotate(360deg)",
+                          bgcolor: "rgb(255, 0, 0, 0.5)",
+                        },
+                      }}
+                    >
+                      <Refresh />
+                    </IconButton>
+                    <p>{personagem}</p>
+                  </div>
                   <button
                     className="bg-gray-200 p-2 rounded-full m-2 hover:bg-gray-300 transition-all text-xs"
                     onClick={() => {
@@ -77,11 +93,18 @@ const Grimorio = () => {
                     <Plus size={20} />
                   </button>
                 </div>
-                <div>
+                <div className="flex flex-col gap-4">
                   {grimorio?.magias.map((spell, i) => (
                     <MagiaCard
                       magia={spell}
-                      onDelete={async () => { }}
+                      onDelete={async () => {
+                        await removeMagiaFromGrimorio(
+                          spell.nome,
+                          grimorio
+                        ).finally(() => {
+                          getGrimorio(setGrimorio, personagem);
+                        });
+                      }}
                       key={i}
                     />
                   ))}
@@ -112,10 +135,14 @@ const Grimorio = () => {
                     size="small"
                   />
                   <button
-                    onClick={() => {
-                      addPersonagem(personagemInput);
-                      setPersonagem(personagemInput);
-                      setOpen(false);
+                    onClick={async () => {
+                      try {
+                        await addPersonagem(personagemInput);
+                        await setPersonagem(personagemInput);
+                        await setOpen(false);
+                      } finally {
+                        getGrimoriosDaConta(setGrimoriosDaConta);
+                      }
                     }}
                     disabled={
                       personagemInput === "" ||
@@ -175,9 +202,7 @@ const Grimorio = () => {
               }}
             >
               <>
-                <div
-                  className="bg-white p-4 rounded-xl font-tormenta w-1/2 h-fit text-center overflow-y-scroll overflow-x-hidden flex flex-col items-center gap-4 max-h-60"
-                >
+                <div className="bg-white p-4 rounded-xl font-tormenta w-1/2 h-fit text-center overflow-y-scroll overflow-x-hidden flex flex-col items-center gap-4 max-h-60">
                   <h1>Adicionar magia</h1>
                   <div className="flex flex-col w-full">
                     {spells.map((spell, i) => (

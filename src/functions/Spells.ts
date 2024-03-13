@@ -10,6 +10,7 @@ export async function getSpells(setSpells: (spells: magiaTipo[]) => void) {
             items.push(doc.data() as magiaTipo);
         });
         setSpells(items);
+        addSpell(); // remove this when all the spells are added
     });
 }
 

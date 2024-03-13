@@ -1,7 +1,6 @@
-import { Avatar, Popover } from "@mui/material";
 import firebase from "../../firebase";
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AvatarPopover } from "./AvatarPopover";
 
 export function Nav() {

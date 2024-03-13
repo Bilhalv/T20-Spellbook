@@ -3,6 +3,7 @@ import { Nav } from "../../components/Nav";
 import { magiaTipo } from "../../data/list magias";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { MagiaCard } from "../../components/MagiaCard";
+import { addSpell } from "../../functions/Spells";
 
 const Home = () => {
   const refMagia = collection(getFirestore(), "Magias");
@@ -15,6 +16,7 @@ const Home = () => {
         items.push(doc.data() as magiaTipo);
       });
       setSpells(items);
+      addSpell();
     });
   }, []);
   return (
