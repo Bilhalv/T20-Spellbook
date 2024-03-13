@@ -2,6 +2,7 @@ import React from "react";
 import { Nav } from "../../components/Nav";
 import { magiaTipo } from "../../data/list magias";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
+import { MagiaCard } from "../../components/MagiaCard";
 
 const Home = () => {
   const refMagia = collection(getFirestore(), "Magias");
@@ -19,13 +20,12 @@ const Home = () => {
   return (
     <>
       <Nav />
-      <div>
-        <h1>here is where ill put the spells just to browse</h1>
-        <ul>
-          {spells.map((spell, idx) => (
-            <li key={idx}>{spell.nome}</li>
-          ))}
-        </ul>
+      <div className="flex flex-col gap-4 mt-4">
+        {spells.map((spell, idx) => (
+          <MagiaCard
+            magia={spell}
+            key={idx} />
+        ))}
       </div>
     </>
   );

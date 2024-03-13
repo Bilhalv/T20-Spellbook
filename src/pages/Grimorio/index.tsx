@@ -17,6 +17,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Pen, Plus, Trash2 } from "lucide-react";
+import { MagiaCard } from "../../components/MagiaCard";
 
 export interface grimorioTipo {
   email: string;
@@ -76,23 +77,15 @@ const Grimorio = () => {
                     <Plus size={20} />
                   </button>
                 </div>
-                {grimorio?.magias.map((spell, i) => (
-                  <div key={i} className="flex justify-between">
-                    <h2>{spell.nome}</h2>
-                    <button
-                      onClick={async () => {
-                        try {
-                          await removeMagiaFromGrimorio(spell.nome, grimorio);
-                        } finally {
-                          getGrimorio(setGrimorio, personagem);
-                        }
-                      }}
-                      className="bg-gray-200 p-2 rounded-full m-2 hover:bg-gray-300 transition-all text-xs"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
-                ))}
+                <div>
+                  {grimorio?.magias.map((spell, i) => (
+                    <MagiaCard
+                      magia={spell}
+                      onDelete={async () => { }}
+                      key={i}
+                    />
+                  ))}
+                </div>
               </>
             )}
             <Modal
