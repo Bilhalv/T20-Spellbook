@@ -4,6 +4,7 @@ import { magiaTipo } from "../../data/list magias";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { MagiaCard } from "../../components/MagiaCard";
 import { addSpell } from "../../functions/Spells";
+import SearchData from "../../components/SearchData";
 
 const Home = () => {
   const refMagia = collection(getFirestore(), "Magias");
@@ -22,6 +23,7 @@ const Home = () => {
   return (
     <>
       <Nav />
+      <SearchData />
       <div className="flex flex-col gap-4 mt-4">
         {spells.map((spell, idx) => (
           <MagiaCard
