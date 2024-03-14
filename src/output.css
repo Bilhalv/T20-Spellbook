@@ -608,12 +608,16 @@ video {
   margin-right: auto;
 }
 
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
 }
 
-.mt-2 {
-  margin-top: 0.5rem;
+.mt-5 {
+  margin-top: 1.25rem;
 }
 
 .inline-block {
@@ -646,8 +650,32 @@ video {
   height: fit-content;
 }
 
+.max-h-20 {
+  max-height: 5rem;
+}
+
 .max-h-60 {
   max-height: 15rem;
+}
+
+.max-h-32 {
+  max-height: 8rem;
+}
+
+.max-h-40 {
+  max-height: 10rem;
+}
+
+.max-h-6 {
+  max-height: 1.5rem;
+}
+
+.max-h-64 {
+  max-height: 16rem;
+}
+
+.max-h-80 {
+  max-height: 20rem;
 }
 
 .w-1\/2 {

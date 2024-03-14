@@ -10,8 +10,8 @@ const Home = () => {
   const [spells, setSpells] = React.useState<magiaTipo[]>([]);
 
   React.useEffect(() => {
-      addSpell(); // remove this line when database coplete
-    onSnapshot(refMagia, (querySnapshot) => {
+    addSpell(); // remove this line when database coplete
+    onSnapshot(refMagia, async (querySnapshot) => {
       const items: magiaTipo[] = [];
       querySnapshot.forEach((doc) => {
         items.push(doc.data() as magiaTipo);
@@ -22,9 +22,7 @@ const Home = () => {
   return (
     <>
       <Nav />
-      <SearchData
-        magiaLista={spells}
-      />
+      <SearchData magiaLista={spells} />
     </>
   );
 };
