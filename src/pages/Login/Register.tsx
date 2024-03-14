@@ -17,7 +17,8 @@ export function Register() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [error, setError] = useState("Faça o Registro");
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword1, setShowPassword1] = React.useState(false);
+  const [showPassword2, setShowPassword2] = React.useState(false);
 
   const handleRegister = async () => {
     if (email !== confirmarEmail) {
@@ -97,17 +98,17 @@ export function Register() {
         <OutlinedInput
           onChange={(e) => setPassword(e.target.value)}
           id="senha"
-          type={showPassword ? "text" : "password"}
+          type={showPassword1 ? "text" : "password"}
           value={password}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
                 aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowPassword1(!showPassword1)}
                 onMouseDown={(e) => e.preventDefault()}
                 edge="end"
               >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
+                {showPassword1 ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           }
@@ -129,7 +130,7 @@ export function Register() {
           disabled={password === ""}
           onChange={(e) => setPasswordConfirm(e.target.value)}
           id="confirmarSenha"
-          type="password"
+          type={showPassword2 ? "text" : "password"}
           value={passwordConfirm}
           label="Confirmar Senha"
           onKeyDown={(e) => {
@@ -140,11 +141,11 @@ export function Register() {
           endAdornment={
             <IconButton
               aria-label="toggle password visibility"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowPassword2(!showPassword2)}
               onMouseDown={(e) => e.preventDefault()}
               edge="end"
             >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
+              {showPassword2 ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           }
         />
