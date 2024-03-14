@@ -32,10 +32,6 @@ export default function SearchData(props: SearchDataProps) {
     });
     setSpells(filtered);
   }
-
-  React.useEffect(() => {
-    filterSpells();
-  }, [input]);
   return (
     <>
       <div className="flex w-1/2 mx-auto border rounded-2xl p-2 mt-2">
@@ -56,8 +52,17 @@ export default function SearchData(props: SearchDataProps) {
             const value = e.target.value.toLowerCase();
             setInput(value);
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              filterSpells();
+            }
+          }}
         />
-        <IconButton type="submit" aria-label="search">
+        <IconButton
+          type="submit"
+          aria-label="search"
+          onClick={() => filterSpells()}
+        >
           <Search />
         </IconButton>
       </div>
