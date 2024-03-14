@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import firebase from "./../../../firebase";
 import {
   Button,
@@ -29,7 +29,6 @@ export function Login() {
       setError("Houve um erro ao logar");
     }
   };
-
   return (
     <>
       <h2 className="text-center text-xl">Login</h2>
@@ -50,6 +49,11 @@ export function Login() {
           id="senha"
           type={showPassword ? "text" : "password"}
           value={password}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleLogin();
+            }
+          }}
           endAdornment={
             <InputAdornment position="end">
               <IconButton

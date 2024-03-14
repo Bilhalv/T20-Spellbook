@@ -42,6 +42,7 @@ export function Register() {
         .createUserWithEmailAndPassword(email, password);
       console.log(response);
       setError("Registrado com sucesso");
+      window.location.href = "/grimorio";
     } catch (error) {
       console.log(error);
       setError("Houve um erro ao registrar");
@@ -131,6 +132,11 @@ export function Register() {
           type="password"
           value={passwordConfirm}
           label="Confirmar Senha"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleRegister();
+            }
+          }}
           endAdornment={
             <IconButton
               aria-label="toggle password visibility"
