@@ -32,60 +32,46 @@ function InputComponent({
   contentInput,
   label,
   type,
+  options,
+  range,
 }: {
   setContentInput: (value: string) => void;
   contentInput: string;
   label: string;
   type?: string;
+  options?: string[];
+  range?: { min: number; max: number };
 }) {
+  const tipo = type ? type : options ? "select" : "text";
   return (
-    <FormControl fullWidth size="small">
-      <InputLabel htmlFor={label}>{label}</InputLabel>
-      <OutlinedInput
-        id={label}
-        size="small"
-        label={label}
-        type={type ? type : "text"}
-        value={contentInput}
-        onChange={(e) => {
-          setContentInput(e.target.value);
-        }}
-      />
-    </FormControl>
-  );
-}
-
-function SelectComponent({
-  setContentSelect,
-  contentSelect,
-  label,
-  options,
-}: {
-  setContentSelect: (value: string) => void;
-  contentSelect: string;
-  label: string;
-  options: string[];
-}) {
-  return (
-    <FormControl fullWidth size="small">
-      <InputLabel id={label}>{label}</InputLabel>
-      <Select
-        id={label}
-        size="small"
-        label={label}
-        value={contentSelect}
-        onChange={(e) => {
-          setContentSelect(e.target.value);
-        }}
-      >
-        <MenuItem value=""> </MenuItem>
-        {options.map((option, idx) => (
-          <MenuItem key={idx} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <TextField
+      id={label}
+      size="small"
+      label={label}
+      type={tipo}
+      value={contentInput}
+      onChange={(e) => {
+        if (tipo === "number" && range) {
+          if (Number(e.target.value) < range.min) {
+            setContentInput(range.min.toString());
+          } else if (Number(e.target.value) > range.max) {
+            setContentInput(range.max.toString());
+          } else {
+            setContentInput(e.target.value);
+          }
+          return;
+        }
+        setContentInput(e.target.value);
+      }}
+      select={tipo === "select"}
+    >
+      {tipo === "select" && <MenuItem value="">Default</MenuItem>}
+      {options?.map((option, idx) => (
+        <MenuItem key={idx} value={option}>
+          {option}
+        </MenuItem>
+      ))}
+    </TextField>
   );
 }
 
@@ -179,12 +165,12 @@ export default function SearchData(props: SearchDataProps) {
               gap: 2,
             }}
           >
-            <SelectComponent
-              contentSelect={
+            <InputComponent
+              contentInput={
                 filters.find((filter) => filter.tipo === "Classificação")
                   ?.content[0]
               }
-              setContentSelect={(e) => {
+              setContentInput={(e) => {
                 findFilter(e, "Classificação");
               }}
               label="Classificação"
@@ -192,13 +178,33 @@ export default function SearchData(props: SearchDataProps) {
             />
             <InputComponent
               contentInput={
-                filters.find((filter) => filter.tipo === "Círulo")?.content[0]
+                filters.find((filter) => filter.tipo === "Círculo")?.content[0]
               }
               setContentInput={(e) => {
-                findFilter(e, "Círulo");
+                findFilter(e, "Círculo");
               }}
-              label="Círulo"
+              label="Círculo"
               type="number"
+              range={{ min: 1, max: 5 }}
+            />
+            <InputComponent
+              contentInput={
+                filters.find((filter) => filter.tipo === "Escola")?.content[0]
+              }
+              setContentInput={(e) => {
+                findFilter(e, "Escola");
+              }}
+              label="Escola"
+              options={[
+                "Abjuração",
+                "Adivinhação ",
+                "Convocação ",
+                "Encantamento",
+                "Evocação",
+                "Ilusão",
+                "Necromancia",
+                "Transmutação",
+              ]}
             />
             <ButtonGroup fullWidth>
               <Button
@@ -210,7 +216,33 @@ export default function SearchData(props: SearchDataProps) {
               >
                 <FilterX />
               </Button>
-              <Button color="success">
+              <Button
+                color="success"
+                onClick={() => {
+                  setFilterOpen(false);
+                  if (filters.length !== 0) {
+                    let newSpells = [...complete];
+                    filters.forEach((filter) => {
+                      if (filter.tipo === "Classificação") {
+                        newSpells = newSpells.filter(
+                          (spell) => spell.tipo === filter.content[0]
+                        );
+                      } else if (filter.tipo === "Círculo") {
+                        newSpells = newSpells.filter(
+                          (spell) => spell.circulo === filter.content[0]
+                        );
+                      } else if (filter.tipo === "Escola") {
+                        newSpells = newSpells.filter(
+                          (spell) => spell.escola === filter.content[0]
+                        );
+                      }
+                    });
+                    setSpells(newSpells);
+                  } else {
+                    setSpells(complete);
+                  }
+                }}
+              >
                 <Filter />
               </Button>
             </ButtonGroup>
