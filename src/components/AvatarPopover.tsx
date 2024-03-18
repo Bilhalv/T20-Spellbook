@@ -90,7 +90,7 @@ export function AvatarPopover() {
           <p>{profileInfo.name}</p>
           <p className="italic text-xs">{profileInfo.email}</p>
         </div>
-        <Avatar sx={{ border: "2px solid white", bgcolor: "white" }} src={profileInfo.photoURL} />
+        <Avatar sx={{ border: "2px solid white" }} src={profileInfo.photoURL} />
       </button>
       <Popover
         id={Boolean(anchorEl) ? "simple-popover" : undefined}
