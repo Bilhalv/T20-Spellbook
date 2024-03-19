@@ -117,11 +117,11 @@ export function MagiaCard({ magia, onDelete }: magiaCardProps) {
             <p
               className={
                 selectClassificacao[magia.tipo] +
-                " w-14 h-14 flex bg-center bg-no-repeat bg-cover p-3"
+                " w-14 h-14 flex bg-center bg-no-repeat bg-cover p-4 justify-center"
               }
             >
               <img src={selectEscola[magia.escola as escolas]} />
-              <p className="text-white text-xs font-bold">1</p>
+              <p className="text-white text-xs font-bold ml-1">{magia.circulo}</p>
             </p>
           </div>
         </AccordionSummary>

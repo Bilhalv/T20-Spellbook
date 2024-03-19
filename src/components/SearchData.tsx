@@ -1,14 +1,19 @@
 import React from "react";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
-import { Bomb, Filter, FilterX, Search } from "lucide-react";
+import { Bomb, Box, ChevronDown, Filter, FilterX, Search } from "lucide-react";
 import { magiaTipo } from "../data/list magias";
 import { MagiaCard } from "./MagiaCard";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Badge,
   Button,
   ButtonGroup,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   FormGroup,
   InputLabel,
   MenuItem,
@@ -17,61 +22,97 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { CheckBox } from "@mui/icons-material";
 
 type filtro = {
   tipo: string; //TODO limitar opções
-  content: any[]; //TODO limitar opções
+  content: string[] | number[] | string | number; //TODO limitar opções
 };
 
 interface SearchDataProps {
   magiaLista: magiaTipo[];
 }
 
-function InputComponent({
+function InputCheckboxAccordion({
   setContentInput,
   contentInput,
   label,
-  type,
   options,
-  range,
 }: {
-  setContentInput: (value: string) => void;
-  contentInput: string;
+  setContentInput: (value: string[]) => void;
+  contentInput: string[];
   label: string;
-  type?: string;
-  options?: string[];
-  range?: { min: number; max: number };
+  options: string[];
 }) {
-  const tipo = type ? type : options ? "select" : "text";
-  return (
-    <TextField
-      id={label}
-      size="small"
-      label={label}
-      type={tipo}
-      value={contentInput}
-      onChange={(e) => {
-        if (tipo === "number" && range) {
-          if (Number(e.target.value) < range.min) {
-            setContentInput(range.min.toString());
-          } else if (Number(e.target.value) > range.max) {
-            setContentInput(range.max.toString());
-          } else {
-            setContentInput(e.target.value);
+  const [checked, setChecked] = React.useState(
+    options.map((option) => contentInput.includes(option))
+  );
+
+  const children = (
+    <div className="flex flex-col">
+      {options.map((option, idx) => (
+        <FormControlLabel
+          label={option}
+          sx={{ ml: 1 }}
+          control={
+            <Checkbox
+              size="small"
+              checked={checked[idx]}
+              onChange={(e) => {
+                const newChecked = [...checked];
+                newChecked[idx] = e.target.checked;
+                setChecked(newChecked);
+                setContentInput(
+                  newChecked.map((e, idx) => (e ? options[idx] : ""))
+                );
+              }}
+            />
           }
-          return;
-        }
-        setContentInput(e.target.value);
-      }}
-      select={tipo === "select"}
-    >
-      {tipo === "select" && <MenuItem value="">Default</MenuItem>}
-      {options?.map((option, idx) => (
-        <MenuItem key={idx} value={option}>
-          {option}
-        </MenuItem>
+        />
       ))}
-    </TextField>
+    </div>
+  );
+
+  return (
+    <>
+      <Accordion
+        sx={{
+          "& ": {
+            bgcolor: "rgba(255,255,255,0)",
+            boxShadow: "none",
+            gap: 0,
+            "& .MuiAccordionSummary-root": {
+              "& .MuiAccordionSummary-content": {
+                margin: 0,
+              },
+              minHeight: "fit-content",
+            },
+          },
+        }}
+      >
+        <AccordionSummary expandIcon={<ChevronDown />}>
+          <FormControlLabel
+            label={label}
+            control={
+              <Checkbox
+                checked={checked.every((e) => e)}
+                indeterminate={
+                  checked.some((e) => e) && checked.some((e) => !e)
+                }
+                onChange={(e) => {
+                  const newChecked = checked.map(() => e.target.checked);
+                  setChecked(newChecked);
+                  setContentInput(
+                    newChecked.map((e, idx) => (e ? options[idx] : ""))
+                  );
+                }}
+              />
+            }
+          />
+        </AccordionSummary>
+        <AccordionDetails>{children}</AccordionDetails>
+      </Accordion>
+    </>
   );
 }
 
@@ -104,24 +145,36 @@ export default function SearchData(props: SearchDataProps) {
     setAnchorEl(event.currentTarget);
     setFilterOpen(!filterOpen);
   };
-  const [filters, setFilters] = React.useState<filtro[]>([]);
+  const defaultFilters: filtro[] = [
+    { tipo: "Classificação", content: ["Arcana", "Universal", "Divina"] },
+    { tipo: "Círculo", content: 0 },
+    {
+      tipo: "Escola",
+      content: [
+        "Abjuração",
+        "Adivinhação ",
+        "Convocação ",
+        "Encantamento",
+        "Evocação",
+        "Ilusão",
+        "Necromancia",
+        "Transmutação",
+      ],
+    },
+  ];
+  const [filters, setFilters] = React.useState<filtro[]>(defaultFilters);
 
-  function findFilter(e: string, tipo: string) {
-    if (!e) {
-      let oldFilters = [...filters];
-      oldFilters.splice(
-        oldFilters.findIndex((filter) => filter.tipo === tipo),
-        1
-      );
-      setFilters(oldFilters);
-      return;
-    }
-    let oldFilters = [...filters];
-    const foundFilter = oldFilters.find((filter) => filter.tipo === tipo);
+  function addFilter(e: string[], label: string) {
+    const oldFilters = [...filters];
+    const foundFilter = oldFilters.find((filter) => filter.tipo === label);
     if (foundFilter) {
-      foundFilter.content[0] = e;
+      oldFilters.map((filter) => {
+        if (filter.tipo === label) {
+          filter.content = e;
+        }
+      });
     } else {
-      oldFilters.push({ tipo: tipo, content: [e] });
+      oldFilters.push({ tipo: label, content: e });
     }
     setFilters(oldFilters);
   }
@@ -165,52 +218,49 @@ export default function SearchData(props: SearchDataProps) {
               gap: 2,
             }}
           >
-            <InputComponent
-              contentInput={
-                filters.find((filter) => filter.tipo === "Classificação")
-                  ?.content[0]
-              }
+            <InputCheckboxAccordion
+              contentInput={[
+                ...(filters.find((filter) => filter.tipo === "Escola")
+                  ?.content as string[]),
+              ]}
               setContentInput={(e) => {
-                findFilter(e, "Classificação");
-              }}
-              label="Classificação"
-              options={["Arcana", "Divina"]}
-            />
-            <InputComponent
-              contentInput={
-                filters.find((filter) => filter.tipo === "Círculo")?.content[0]
-              }
-              setContentInput={(e) => {
-                findFilter(e, "Círculo");
-              }}
-              label="Círculo"
-              type="number"
-              range={{ min: 1, max: 5 }}
-            />
-            <InputComponent
-              contentInput={
-                filters.find((filter) => filter.tipo === "Escola")?.content[0]
-              }
-              setContentInput={(e) => {
-                findFilter(e, "Escola");
+                addFilter(e, "Escola");
               }}
               label="Escola"
-              options={[
-                "Abjuração",
-                "Adivinhação ",
-                "Convocação ",
-                "Encantamento",
-                "Evocação",
-                "Ilusão",
-                "Necromancia",
-                "Transmutação",
-              ]}
+              options={defaultFilters[2].content as string[]}
             />
+            <InputCheckboxAccordion
+              contentInput={[
+                ...(filters.find((filter) => filter.tipo === "Classificação")
+                  ?.content as string[]),
+              ]}
+              setContentInput={(e) => {
+                addFilter(e, "Classificação");
+              }}
+              label="Classificação"
+              options={defaultFilters[0].content as string[]}
+            />
+            <TextField label="Círculo" select
+              value={filters.find((filter) => filter.tipo === "Círculo")?.content as string}
+              onChange={(e) => {
+                addFilter([e.target.value as string], "Círculo");
+              }}
+            >
+              <MenuItem value={""}>Todos</MenuItem>
+              {[...new Set(complete.map((spell) => spell.circulo))].map(
+                (circulo, idx) => (
+                  <MenuItem key={idx} value={circulo}>
+                    {circulo}
+                  </MenuItem>
+                )
+              )}
+            </TextField>
             <ButtonGroup fullWidth>
               <Button
                 onClick={() => {
-                  setFilters([]);
                   setFilterOpen(false);
+                  setFilters(defaultFilters);
+                  setSpells(complete);
                 }}
                 color="error"
               >
@@ -222,19 +272,26 @@ export default function SearchData(props: SearchDataProps) {
                   setFilterOpen(false);
                   if (filters.length !== 0) {
                     let newSpells = [...complete];
+                    let dictionary: {
+                      0: string;
+                      1: string;
+                    }[] = [
+                      ["Classificação", "tipo"],
+                      ["Círculo", "circulo"],
+                      ["Escola", "escola"],
+                    ];
                     filters.forEach((filter) => {
-                      if (filter.tipo === "Classificação") {
-                        newSpells = newSpells.filter(
-                          (spell) => spell.tipo === filter.content[0]
+                      if (Array.isArray(filter.content)) {
+                        const dict = dictionary.find(
+                          (dict) => dict[0] === filter.tipo
                         );
-                      } else if (filter.tipo === "Círculo") {
-                        newSpells = newSpells.filter(
-                          (spell) => spell.circulo === filter.content[0]
-                        );
-                      } else if (filter.tipo === "Escola") {
-                        newSpells = newSpells.filter(
-                          (spell) => spell.escola === filter.content[0]
-                        );
+                        if (dict) {
+                          newSpells = newSpells.filter((spell) => {
+                            return (filter.content as string[]).includes(
+                              spell[dict[1]] as string
+                            );
+                          });
+                        }
                       }
                     });
                     setSpells(newSpells);
