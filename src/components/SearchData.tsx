@@ -147,7 +147,7 @@ export default function SearchData(props: SearchDataProps) {
   };
   const defaultFilters: filtro[] = [
     { tipo: "Classificação", content: ["Arcana", "Universal", "Divina"] },
-    { tipo: "Círculo", content: 0 },
+    { tipo: "Círculo", content: "" as string },
     {
       tipo: "Escola",
       content: [
@@ -168,11 +168,15 @@ export default function SearchData(props: SearchDataProps) {
     const oldFilters = [...filters];
     const foundFilter = oldFilters.find((filter) => filter.tipo === label);
     if (foundFilter) {
-      oldFilters.map((filter) => {
-        if (filter.tipo === label) {
-          filter.content = e;
-        }
-      });
+      if (e[0] === "") {
+        
+      } else {
+        oldFilters.map((filter) => {
+          if (filter.tipo === label) {
+            filter.content = e;
+          }
+        });
+      }
     } else {
       oldFilters.push({ tipo: label, content: e });
     }
@@ -181,7 +185,23 @@ export default function SearchData(props: SearchDataProps) {
   return (
     <>
       <div className="flex w-1/2 mx-auto border rounded-2xl p-2 mt-2">
-        <Badge badgeContent={filters.length} color="error">
+        <Badge
+          badgeContent={filters.reduce((acc, filter, idx) => {
+            if (filter.content !== defaultFilters[idx].content) {
+              if (
+                Array.isArray(filter.content) &&
+                JSON.stringify(filter.content) ===
+                  JSON.stringify(defaultFilters[idx].content as string[])
+              ) {
+                return acc;
+              }
+              return acc + 1;
+            } else {
+              return acc;
+            }
+          }, 0)}
+          color="error"
+        >
           <IconButton
             aria-label="filter"
             aria-describedby={"filter"}
@@ -240,13 +260,18 @@ export default function SearchData(props: SearchDataProps) {
               label="Classificação"
               options={defaultFilters[0].content as string[]}
             />
-            <TextField label="Círculo" select
-              value={filters.find((filter) => filter.tipo === "Círculo")?.content as string}
+            <TextField
+              label="Círculo"
+              select
+              value={
+                filters.find((filter) => filter.tipo === "Círculo")
+                  ?.content as string
+              }
               onChange={(e) => {
-                addFilter([e.target.value as string], "Círculo");
+                addFilter([(e.target.value || "") as string], "Círculo");
               }}
             >
-              <MenuItem value={""}>Todos</MenuItem>
+              <MenuItem value="">Todos</MenuItem>
               {[...new Set(complete.map((spell) => spell.circulo))].map(
                 (circulo, idx) => (
                   <MenuItem key={idx} value={circulo}>
