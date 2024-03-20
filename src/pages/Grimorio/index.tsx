@@ -11,10 +11,11 @@ import {
 } from "../../functions/Grimorios";
 import { magiaTipo } from "../../data/list magias";
 import { getSpells } from "../../functions/Spells";
-import { IconButton, Modal, TextField } from "@mui/material";
+import { IconButton, Modal, Popover, TextField } from "@mui/material";
 import { Pen, Plus, Trash2 } from "lucide-react";
 import { MagiaCard } from "../../components/MagiaCard";
 import { Refresh } from "@mui/icons-material";
+import SearchData from "../../components/SearchData";
 
 export interface grimorioTipo {
   email: string;
@@ -44,6 +45,12 @@ const Grimorio = () => {
       getGrimorio(setGrimorio, grimoriosDaConta[0]?.personagem);
     }
   }, 100);
+
+  const [popovers, setPopovers] = React.useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
   return (
     <>
       <body className="bg-bg-t20 min-h-screen">
@@ -51,29 +58,28 @@ const Grimorio = () => {
         <div className="bg-white/90 desktop:w-5/6 mx-2 desktop:mx-auto rounded-xl p-4">
           {firebase.auth().currentUser ? (
             <>
-              <div className="flex justify-between items-center px-10">
-                <h1>
-                  Grimório selecionado: {personagem ? personagem : "Nenhum"}
-                </h1>
-                <IconButton
-                  onClick={() => {
-                    setOpen(true);
-                    getGrimoriosDaConta(setGrimoriosDaConta);
-                  }}
-                >
-                  <Pen />
-                </IconButton>
-              </div>
               {personagem && (
-                <>
+                <div className="flex flex-col gap-4">
+                  <p className="text-center font-tormenta text-2xl">
+                    {personagem}
+                  </p>
                   <div className="flex w-full justify-between px-6 items-center">
-                    <div className="text-xl font-tormenta flex gap-4 items-center">
+                    <div className="flex flex-col items-center">
                       <IconButton
+                        aria-describedby="refresh"
+                        id="refresh"
+                        aria-haspopup="true"
+                        onMouseEnter={() => {
+                          setPopovers([true, ...popovers.slice(1)]);
+                        }}
+                        onMouseLeave={() => {
+                          setPopovers([false, ...popovers.slice(1)]);
+                        }}
                         onClick={() => {
                           getGrimorio(setGrimorio, personagem);
                         }}
                         sx={{
-                          bgcolor: "red",
+                          bgcolor: "transparent",
                           transition: "all 0.5s",
                           "&:hover": {
                             transform: "rotate(360deg)",
@@ -83,34 +89,138 @@ const Grimorio = () => {
                       >
                         <Refresh />
                       </IconButton>
-                      <p>{personagem}</p>
-                    </div>
-                    <button
-                      className="bg-gray-200 p-2 rounded-full m-2 hover:bg-gray-300 transition-all text-xs"
-                      onClick={() => {
-                        setOpenAddMagia(true);
-                      }}
-                    >
-                      <Plus size={20} />
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    {grimorio?.magias.map((spell, i) => (
-                      <MagiaCard
-                        magia={spell}
-                        onDelete={async () => {
-                          await removeMagiaFromGrimorio(
-                            spell.nome,
-                            grimorio
-                          ).finally(() => {
-                            getGrimorio(setGrimorio, personagem);
-                          });
+                      <Popover
+                        id="refresh"
+                        anchorEl={document.getElementById("refresh") as Element}
+                        open={popovers[0]}
+                        onClose={() => {
+                          setPopovers([false, ...popovers.slice(1)]);
                         }}
-                        key={i}
-                      />
-                    ))}
+                        disableRestoreFocus
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                        sx={{
+                          pointerEvents: "none",
+                          "& .MuiPopover-paper": {
+                            backgroundColor: "transparent",
+                            boxShadow: "none",
+                          },
+                        }}
+                      >
+                        <div className="p-1 rounded-xl bg-red-600/75 font-poppins italic text-white px-4">
+                          Refresh
+                        </div>
+                      </Popover>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                      <IconButton
+                        aria-describedby="remove"
+                        id="remove"
+                        aria-haspopup="true"
+                        onMouseEnter={() => {
+                          setPopovers([popovers[0], true, popovers[2]]);
+                        }}
+                        onMouseLeave={() => {
+                          setPopovers([popovers[0], false, popovers[2]]);
+                        }}
+                        onClick={() => {
+                          setOpen(true);
+                        }}
+                        sx={{
+                          bgcolor: "transparent",
+                          transition: "all 0.5s",
+                          "&:hover": {
+                            bgcolor: "rgb(255, 0, 0, 0.5)",
+                          },
+                        }}
+                      >
+                        <Pen />
+                      </IconButton>
+                      <Popover
+                        id="remove"
+                        anchorEl={document.getElementById("remove") as Element}
+                        open={popovers[1]}
+                        onClose={() => {
+                          setPopovers([popovers[0], false, popovers[2]]);
+                        }}
+                        disableRestoreFocus
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                        sx={{
+                          pointerEvents: "none",
+                          "& .MuiPopover-paper": {
+                            backgroundColor: "transparent",
+                            boxShadow: "none",
+                          },
+                        }}
+                      >
+                        <div className="p-1 rounded-xl bg-red-600/75 font-poppins italic text-white px-4">
+                          Mudar
+                        </div>
+                      </Popover>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                      <button
+                        className="bg-gray-200 p-2 rounded-full m-2 hover:bg-gray-300 transition-all text-xs"
+                        onClick={() => {
+                          setOpenAddMagia(true);
+                        }}
+                        onMouseEnter={() => {
+                          setPopovers([popovers[0], popovers[1], true]);
+                        }}
+                        onMouseLeave={() => {
+                          setPopovers([popovers[0], popovers[1], false]);
+                        }}
+                        id="add"
+                      >
+                        <Plus size={20} />
+                      </button>
+                      <Popover
+                        id="add"
+                        anchorEl={document.getElementById("add") as Element}
+                        open={popovers[2]}
+                        onClose={() => {
+                          setPopovers([popovers[0], popovers[1], false]);
+                        }}
+                        disableRestoreFocus
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                        sx={{
+                          pointerEvents: "none",
+                          "& .MuiPopover-paper": {
+                            backgroundColor: "transparent",
+                            boxShadow: "none",
+                          },
+                        }}
+                      >
+                        <div className="p-1 px-4 rounded-xl bg-red-600/75 font-poppins italic text-white">
+                          Adicionar
+                        </div>
+                      </Popover>
+                    </div>
                   </div>
-                </>
+                  <div>
+                    {grimorio && <SearchData magiaLista={grimorio.magias} />}
+                  </div>
+                </div>
               )}
               <Modal
                 open={open}
