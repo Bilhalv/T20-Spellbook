@@ -129,16 +129,6 @@ export default function SearchData(props: SearchDataProps) {
     }
   }, [spells, input]);
 
-  function filterSpells() {
-    if (input === "") {
-      setSpells(complete);
-      return;
-    }
-    const filtered = complete.filter((spell) => {
-      return spell.nome.toLowerCase().includes(input as string);
-    });
-    setSpells(filtered);
-  }
   const [filterOpen, setFilterOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -147,7 +137,7 @@ export default function SearchData(props: SearchDataProps) {
   };
   const defaultFilters: filtro[] = [
     { tipo: "Classificação", content: ["Arcana", "Universal", "Divina"] },
-    { tipo: "Círculo", content: "" as string },
+    { tipo: "Círculo", content: "" },
     {
       tipo: "Escola",
       content: [
@@ -164,12 +154,11 @@ export default function SearchData(props: SearchDataProps) {
   ];
   const [filters, setFilters] = React.useState<filtro[]>(defaultFilters);
 
-  function addFilter(e: string[], label: string) {
+  function addFilter(e: string[] | string, label: string) {
     const oldFilters = [...filters];
     const foundFilter = oldFilters.find((filter) => filter.tipo === label);
     if (foundFilter) {
       if (e[0] === "") {
-        
       } else {
         oldFilters.map((filter) => {
           if (filter.tipo === label) {
@@ -181,6 +170,54 @@ export default function SearchData(props: SearchDataProps) {
       oldFilters.push({ tipo: label, content: e });
     }
     setFilters(oldFilters);
+  }
+
+  function filterSpells() {
+    if (
+      input === "" &&
+      JSON.stringify(filters) === JSON.stringify(defaultFilters)
+    ) {
+      setSpells(complete);
+      return;
+    } else {
+      let newSpells = [...complete];
+      let dictionary: {
+        0: string;
+        1: string;
+      }[] = [
+        ["Classificação", "tipo"],
+        ["Círculo", "circulo"],
+        ["Escola", "escola"],
+      ];
+      filters.forEach((filter) => {
+        if (Array.isArray(filter.content)) {
+          const dict = dictionary.find((dict) => dict[0] === filter.tipo);
+          if (dict) {
+            newSpells = newSpells.filter((spell) => {
+              if (dict === dictionary[1]) {
+                console.log(spell[dict[1]] === filter.content);
+                return (
+                  (spell[dict[1]] as string) === (filter.content as string)
+                );
+              }
+              return (filter.content as string[]).includes(
+                spell[dict[1]] as string
+              );
+            });
+          }
+        } else {
+          newSpells = newSpells.filter((spell) => {
+            return spell[dictionary[1][1]] === filter.content;
+          });
+        }
+      });
+      if (input) {
+        newSpells = newSpells.filter((spell) => {
+          return spell.nome.toLowerCase().includes(input as string);
+        });
+      }
+      setSpells(newSpells);
+    }
   }
   return (
     <>
@@ -239,10 +276,7 @@ export default function SearchData(props: SearchDataProps) {
             }}
           >
             <InputCheckboxAccordion
-              contentInput={[
-                ...(filters.find((filter) => filter.tipo === "Escola")
-                  ?.content as string[]),
-              ]}
+              contentInput={[...(filters[2].content as string[])]}
               setContentInput={(e) => {
                 addFilter(e, "Escola");
               }}
@@ -250,10 +284,7 @@ export default function SearchData(props: SearchDataProps) {
               options={defaultFilters[2].content as string[]}
             />
             <InputCheckboxAccordion
-              contentInput={[
-                ...(filters.find((filter) => filter.tipo === "Classificação")
-                  ?.content as string[]),
-              ]}
+              contentInput={[...(filters[0].content as string[])]}
               setContentInput={(e) => {
                 addFilter(e, "Classificação");
               }}
@@ -262,23 +293,23 @@ export default function SearchData(props: SearchDataProps) {
             />
             <TextField
               label="Círculo"
+              id="select"
               select
-              value={
-                filters.find((filter) => filter.tipo === "Círculo")
-                  ?.content as string
-              }
+              value={filters[1].content as string}
               onChange={(e) => {
-                addFilter([(e.target.value || "") as string], "Círculo");
+                if (!e.target.value) {
+                  addFilter("", "Círculo");
+                } else {
+                  addFilter(e.target.value as string, "Círculo");
+                }
               }}
             >
-              <MenuItem value="">Todos</MenuItem>
-              {[...new Set(complete.map((spell) => spell.circulo))].map(
-                (circulo, idx) => (
-                  <MenuItem key={idx} value={circulo}>
-                    {circulo}
-                  </MenuItem>
-                )
-              )}
+              <MenuItem value={""}>Todos</MenuItem>
+              {[...new Array(5)].map((_, idx) => (
+                <MenuItem key={idx + 1} value={(idx + 1) as unknown as string}>
+                  {idx + 1}
+                </MenuItem>
+              ))}
             </TextField>
             <ButtonGroup fullWidth>
               <Button
@@ -294,35 +325,8 @@ export default function SearchData(props: SearchDataProps) {
               <Button
                 color="success"
                 onClick={() => {
+                  filterSpells();
                   setFilterOpen(false);
-                  if (filters.length !== 0) {
-                    let newSpells = [...complete];
-                    let dictionary: {
-                      0: string;
-                      1: string;
-                    }[] = [
-                      ["Classificação", "tipo"],
-                      ["Círculo", "circulo"],
-                      ["Escola", "escola"],
-                    ];
-                    filters.forEach((filter) => {
-                      if (Array.isArray(filter.content)) {
-                        const dict = dictionary.find(
-                          (dict) => dict[0] === filter.tipo
-                        );
-                        if (dict) {
-                          newSpells = newSpells.filter((spell) => {
-                            return (filter.content as string[]).includes(
-                              spell[dict[1]] as string
-                            );
-                          });
-                        }
-                      }
-                    });
-                    setSpells(newSpells);
-                  } else {
-                    setSpells(complete);
-                  }
                 }}
               >
                 <Filter />
