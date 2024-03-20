@@ -42,7 +42,7 @@ export function MagiaCard({ magia, onDelete }: magiaCardProps) {
   };
   const [isDisabled, setIsDisabled] = React.useState(false);
   return (
-    <div className="bg-bg-t20 px-5 py-2 border-opacity-25 rounded-xl font-tormenta w-5/6 mx-auto">
+    <div className="bg-bg-t20 px-5 py-2 border-opacity-25 rounded-xl font-tormenta  mx-auto w-full">
       <Accordion
         sx={{
           bgcolor: "transparent",
@@ -54,7 +54,7 @@ export function MagiaCard({ magia, onDelete }: magiaCardProps) {
           {onDelete && (
             <IconButton
               onClick={async () => {
-                  await onDelete();
+                await onDelete();
               }}
               sx={{
                 zIndex: 5,
@@ -121,7 +121,9 @@ export function MagiaCard({ magia, onDelete }: magiaCardProps) {
               }
             >
               <img src={selectEscola[magia.escola as escolas]} />
-              <p className="text-white text-xs font-bold ml-1">{magia.circulo}</p>
+              <p className="text-white text-xs font-bold ml-1">
+                {magia.circulo}
+              </p>
             </p>
           </div>
         </AccordionSummary>
@@ -132,7 +134,10 @@ export function MagiaCard({ magia, onDelete }: magiaCardProps) {
               magia.aprimoramentos.map((aprimoramento, index) =>
                 aprimoramento.pm > 0 ? (
                   <p key={index}>
-                    &nbsp;<b className="text-red-600 font-tormenta">+{aprimoramento.pm}pm</b>
+                    &nbsp;
+                    <b className="text-red-600 font-tormenta">
+                      +{aprimoramento.pm}pm
+                    </b>
                     <i>&nbsp;{aprimoramento.desc}.</i>
                   </p>
                 ) : (

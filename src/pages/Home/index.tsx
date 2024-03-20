@@ -21,8 +21,10 @@ const Home = () => {
   }, []);
   return (
     <>
-      <Nav />
-      <SearchData magiaLista={spells} />
+      <body className="bg-bg-t20 min-h-screen">
+        <Nav />
+        <SearchData magiaLista={spells} />
+      </body>
     </>
   );
 };

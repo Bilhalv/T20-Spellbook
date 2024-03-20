@@ -5,15 +5,17 @@ import { Pen, LogOut } from "lucide-react";
 import "firebase/storage";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
-function ButtonConstructor(content: string, onClick: () => void, icon: React.JSX.Element) {
+function ButtonConstructor(
+  content: string,
+  onClick: () => void,
+  icon: React.JSX.Element
+) {
   return (
     <button
       onClick={onClick}
       className="border-r-2 border-transparent hover:border-r-white text-left font-bold p-2 transition-all flex justify-between items-center hover:cursor-pointer"
     >
-      <p>
-        {content}
-      </p>
+      <p>{content}</p>
       {icon}
     </button>
   );
@@ -58,10 +60,10 @@ export function AvatarPopover() {
             uploadTask.then((snapshot) => {
               getDownloadURL(snapshot.ref).then((url) => {
                 firebase.auth().currentUser?.updateProfile({
-                  photoURL: url
-                })
-              })
-            })
+                  photoURL: url,
+                });
+              });
+            });
           }
         };
         break;
@@ -112,9 +114,13 @@ export function AvatarPopover() {
         }}
       >
         <div className="flex flex-col w-32 text-sm">
-          {ButtonConstructor("Perfil", () => {
-            setIsProfileOpen(true);
-          }, <Pen size={20} />)}
+          {ButtonConstructor(
+            "Perfil",
+            () => {
+              setIsProfileOpen(true);
+            },
+            <Pen size={20} />
+          )}
           {ButtonConstructor("Logout", onLogout, <LogOut size={20} />)}
         </div>
       </Popover>
@@ -125,13 +131,16 @@ export function AvatarPopover() {
       >
         <div className="h-96 w-1/2 bg-white/75 absolute p-4 rounded-xl flex flex-col justify-center items-center gap-4">
           <Avatar
-            sx={{ cursor: "pointer", width: 100, height: 100, border: "2px solid white", bgcolor: "white" }}
+            sx={{
+              cursor: "pointer",
+              width: 100,
+              height: 100,
+              border: "2px solid white",
+            }}
             onClick={() => onEditProfile("Foto de perfil")}
             src={profileInfo.photoURL}
           />
-          <p
-            className="hover:cursor-not-allowed"
-          >
+          <p className="hover:cursor-not-allowed">
             {profileInfo.email || "Sem email"}
           </p>
           <p

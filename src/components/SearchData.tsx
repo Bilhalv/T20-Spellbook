@@ -221,151 +221,156 @@ export default function SearchData(props: SearchDataProps) {
   }
   return (
     <>
-      <div className="flex w-1/2 mx-auto border rounded-2xl p-2 mt-2">
-        <Badge
-          badgeContent={filters.reduce((acc, filter, idx) => {
-            if (filter.content !== defaultFilters[idx].content) {
-              if (
-                Array.isArray(filter.content) &&
-                JSON.stringify(filter.content) ===
-                  JSON.stringify(defaultFilters[idx].content as string[])
-              ) {
+      <div className="desktop:w-5/6 bg-white/90 p-4 rounded-xl desktop:mx-auto mx-4">
+        <div className="flex w-full mx-auto border rounded-2xl p-2 mt-2">
+          <Badge
+            badgeContent={filters.reduce((acc, filter, idx) => {
+              if (filter.content !== defaultFilters[idx].content) {
+                if (
+                  Array.isArray(filter.content) &&
+                  JSON.stringify(filter.content) ===
+                    JSON.stringify(defaultFilters[idx].content as string[])
+                ) {
+                  return acc;
+                }
+                return acc + 1;
+              } else {
                 return acc;
               }
-              return acc + 1;
-            } else {
-              return acc;
-            }
-          }, 0)}
-          color="error"
-        >
-          <IconButton
-            aria-label="filter"
-            aria-describedby={"filter"}
-            onClick={handleClick}
+            }, 0)}
+            color="error"
           >
-            <Filter />
-          </IconButton>
-        </Badge>
-        <Popover
-          id={"filter"}
-          open={filterOpen}
-          anchorEl={anchorEl}
-          onClose={() => setFilterOpen(false)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          sx={{
-            "& .MuiPopover-paper": {
-              padding: 2,
-              borderRadius: 5,
-              backgroundColor: "rgba(255,255,255,0.9)",
-            },
-          }}
-        >
-          <FormGroup
+            <IconButton
+              aria-label="filter"
+              aria-describedby={"filter"}
+              onClick={handleClick}
+            >
+              <Filter />
+            </IconButton>
+          </Badge>
+          <Popover
+            id={"filter"}
+            open={filterOpen}
+            anchorEl={anchorEl}
+            onClose={() => setFilterOpen(false)}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
+              "& .MuiPopover-paper": {
+                padding: 2,
+                borderRadius: 5,
+                backgroundColor: "rgba(255,255,255,0.9)",
+              },
             }}
           >
-            <InputCheckboxAccordion
-              contentInput={[...(filters[2].content as string[])]}
-              setContentInput={(e) => {
-                addFilter(e, "Escola");
-              }}
-              label="Escola"
-              options={defaultFilters[2].content as string[]}
-            />
-            <InputCheckboxAccordion
-              contentInput={[...(filters[0].content as string[])]}
-              setContentInput={(e) => {
-                addFilter(e, "Classificação");
-              }}
-              label="Classificação"
-              options={defaultFilters[0].content as string[]}
-            />
-            <TextField
-              label="Círculo"
-              id="select"
-              select
-              value={filters[1].content as string}
-              onChange={(e) => {
-                if (!e.target.value) {
-                  addFilter("", "Círculo");
-                } else {
-                  addFilter(e.target.value as string, "Círculo");
-                }
+            <FormGroup
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
               }}
             >
-              <MenuItem value={""}>Todos</MenuItem>
-              {[...new Array(5)].map((_, idx) => (
-                <MenuItem key={idx + 1} value={(idx + 1) as unknown as string}>
-                  {idx + 1}
-                </MenuItem>
-              ))}
-            </TextField>
-            <ButtonGroup fullWidth>
-              <Button
-                onClick={() => {
-                  setFilterOpen(false);
-                  setFilters(defaultFilters);
-                  setSpells(complete);
+              <InputCheckboxAccordion
+                contentInput={[...(filters[2].content as string[])]}
+                setContentInput={(e) => {
+                  addFilter(e, "Escola");
                 }}
-                color="error"
-              >
-                <FilterX />
-              </Button>
-              <Button
-                color="success"
-                onClick={() => {
-                  filterSpells();
-                  setFilterOpen(false);
+                label="Escola"
+                options={defaultFilters[2].content as string[]}
+              />
+              <InputCheckboxAccordion
+                contentInput={[...(filters[0].content as string[])]}
+                setContentInput={(e) => {
+                  addFilter(e, "Classificação");
+                }}
+                label="Classificação"
+                options={defaultFilters[0].content as string[]}
+              />
+              <TextField
+                label="Círculo"
+                id="select"
+                select
+                value={filters[1].content as string}
+                onChange={(e) => {
+                  if (!e.target.value) {
+                    addFilter("", "Círculo");
+                  } else {
+                    addFilter(e.target.value as string, "Círculo");
+                  }
                 }}
               >
-                <Filter />
-              </Button>
-            </ButtonGroup>
-          </FormGroup>
-        </Popover>
-        <InputBase
-          placeholder={
-            complete
-              .map((spell) => spell.nome)
-              .splice(0, 2)
-              .join(", ") + ", ..."
-          }
-          inputProps={{ "aria-label": "search" }}
-          fullWidth
-          value={input}
-          onChange={(e) => {
-            const value = e.target.value.toLowerCase();
-            setInput(value);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              filterSpells();
+                <MenuItem value={""}>Todos</MenuItem>
+                {[...new Array(5)].map((_, idx) => (
+                  <MenuItem
+                    key={idx + 1}
+                    value={(idx + 1) as unknown as string}
+                  >
+                    {idx + 1}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <ButtonGroup fullWidth>
+                <Button
+                  onClick={() => {
+                    setFilterOpen(false);
+                    setFilters(defaultFilters);
+                    setSpells(complete);
+                  }}
+                  color="error"
+                >
+                  <FilterX />
+                </Button>
+                <Button
+                  color="success"
+                  onClick={() => {
+                    filterSpells();
+                    setFilterOpen(false);
+                  }}
+                >
+                  <Filter />
+                </Button>
+              </ButtonGroup>
+            </FormGroup>
+          </Popover>
+          <InputBase
+            placeholder={
+              complete
+                .map((spell) => spell.nome)
+                .splice(0, 2)
+                .join(", ") + ", ..."
             }
-          }}
-        />
-        <IconButton
-          type="submit"
-          aria-label="search"
-          onClick={() => filterSpells()}
-        >
-          <Search />
-        </IconButton>
-      </div>
-      <div className="flex flex-wrap justify-center gap-4 mt-5">
-        {spells.map((spell, idx) => (
-          <MagiaCard key={idx} magia={spell} />
-        ))}
+            inputProps={{ "aria-label": "search" }}
+            fullWidth
+            value={input}
+            onChange={(e) => {
+              const value = e.target.value.toLowerCase();
+              setInput(value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                filterSpells();
+              }
+            }}
+          />
+          <IconButton
+            type="submit"
+            aria-label="search"
+            onClick={() => filterSpells()}
+          >
+            <Search />
+          </IconButton>
+        </div>
+        <div className="flex flex-col justify-center gap-4 mt-5 w-fit">
+          {spells.map((spell, idx) => (
+            <MagiaCard key={idx} magia={spell} />
+          ))}
+        </div>
       </div>
     </>
   );
