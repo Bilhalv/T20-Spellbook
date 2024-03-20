@@ -9,7 +9,7 @@ export function Nav() {
     setJanela(window.location.pathname);
   }, [window.location.pathname]);
   return (
-    <nav className="bg-gray-800 p-4 text-white flex justify-between h-20 mb-4">
+    <nav className="from-transparent bg-gradient-to-t to-black p-4 text-white flex justify-between h-20 mb-4">
       <div className="text-xl w-full flex">
         <Link
           to="/"
