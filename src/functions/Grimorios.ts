@@ -39,9 +39,7 @@ export async function addToGrimorio(x: magiaTipo, personagem: string) {
         magias: arrayUnion(x),
       });
 
-      console.log("Document written with ID: ", docRef.id);
     } else {
-      console.log("No matching document found");
     }
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -65,7 +63,6 @@ export async function removeMagiaFromGrimorio(
   x: string,
   grimorio: grimorioTipo | undefined
 ) {
-  console.log("Attempting to remove: ", x);
   try {
     //find the grimorio
     const querySnapshot = await getDocs(refGrimorio);
@@ -81,10 +78,8 @@ export async function removeMagiaFromGrimorio(
             grimorio?.magias.find((y) => y.nome === x) as magiaTipo
           ),
         });
-        console.log("Document written with ID: ", docRef.id);
       }
     });
-    console.log("Spell removed with success: ", x);
   } catch (e) {
     console.error("Error removing document: ", e);
   }
@@ -99,7 +94,6 @@ export async function addPersonagem(personagem: string) {
     };
     const docRef = doc(refGrimorio);
     await setDoc(docRef, newPersonagem as grimorioTipo);
-    console.log("Personagem added with success: ", personagem);
   } catch (e) {
     console.error("Error adding personagem: ", e);
   }

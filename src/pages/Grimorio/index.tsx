@@ -63,6 +63,11 @@ const Grimorio = () => {
   ]);
 
   const [tabs, setTabs] = React.useState<string>("Add");
+
+  function AtualizarArray() {
+    getGrimorio(setGrimorio, personagem);
+    console.log("Atualizado", personagem, grimorio);
+  }
   return (
     <>
       <body className="bg-bg-t20 min-h-screen">
@@ -87,8 +92,8 @@ const Grimorio = () => {
                       onMouseLeave={() => {
                         setPopovers([false, ...popovers.slice(1)]);
                       }}
-                      onClick={ () => {
-                         getGrimorio(setGrimorio, personagem as string);
+                      onClick={() => {
+                        AtualizarArray();
                       }}
                       sx={{
                         bgcolor: "transparent",

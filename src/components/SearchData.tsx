@@ -117,7 +117,12 @@ function InputCheckboxAccordion({
 }
 
 export default function SearchData(props: SearchDataProps) {
-  const complete = [...props.magiaLista];
+  let complete = [...props.magiaLista];
+  React.useEffect(() => {
+    if (JSON.stringify(complete) !== JSON.stringify(props.magiaLista)) {
+      complete = [...props.magiaLista];
+    }
+  }, [props.magiaLista]);
   const [spells, setSpells] = React.useState<magiaTipo[]>([
     ...props.magiaLista,
   ]);
