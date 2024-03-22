@@ -366,7 +366,7 @@ export default function SearchData(props: SearchDataProps) {
             <Search />
           </IconButton>
         </div>
-        <div className="flex flex-col justify-center gap-4 mt-5 w-fit">
+        <div className="flex flex-col justify-center gap-4 mt-5 w-full items-center">
           {spells.map((spell, idx) => (
             <MagiaCard key={idx} magia={spell} />
           ))}
