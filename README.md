@@ -15,10 +15,3 @@ To get started with the repository, follow these steps:
     ```
     npm start
     ```
-
-## TailwindCSS
-
-To start the TailwindCSS, run the following command:
-    ```
-    npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
-    ```
