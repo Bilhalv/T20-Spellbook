@@ -20,11 +20,6 @@ const refGrimorio = collection(getFirestore(), "Grimorio");
 
 export async function addToGrimorio(x: magiaTipo, personagem: string) {
   try {
-    const grimorio: grimorioTipo = {
-      email: firebase.auth().currentUser?.email || "",
-      magias: [x],
-      personagem: personagem,
-    };
     var personagemID;
 
     const querySnapshot = await getDocs(refGrimorio);
